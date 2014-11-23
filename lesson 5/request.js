@@ -18,11 +18,6 @@ function addEventListeners() {         //Привязывает обработч
     document.getElementById('searchInput').addEventListener('search', function () {
         sendWikiRequest(document.getElementById('searchInput').value, callback)
         });
-    document.getElementById('mixButton').addEventListener('click', mixItems);
-    document.getElementById('reverseSortButton').addEventListener('click', reverseSortItems);
-    document.getElementById('delItemButton').addEventListener('click', deleteItem);
-    document.getElementById('moveUpButton').addEventListener('click', moveUpItem);
-    document.getElementById('moveDownButton').addEventListener('click', moveDownItem);
 }
 function sendWikiRequest (search, callback) {   //посылает запрос на сервер
     var scr1 = document.createElement('script');
@@ -56,25 +51,4 @@ function makeNewItem () { //создает новый пункт HTML списк
     var a = document.createElement('a');
     li.appendChild(a);
     return a;
-}
-//функции работы с массивом
-function mixItems () {
-    mainArray.sort(function(){return (Math.random() - Math.random())*100});
-    refreshMainList();
-}
-function reverseSortItems () {
-    mainArray.reverse();
-    refreshMainList();
-}
-function moveUpItem (){
-    mainArray.unshift(mainArray.splice(Number(document.getElementById('itemN').value), 1)[0]);
-    refreshMainList();
-}
-function moveDownItem (){
-    mainArray.push(mainArray.splice(Number(document.getElementById('itemN').value), 1)[0]);
-    refreshMainList();
-}
-function deleteItem (){
-    mainArray.splice(Number(document.getElementById('itemN').value), 1);
-    refreshMainList();
 }
