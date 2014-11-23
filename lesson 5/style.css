@@ -1,0 +1,11 @@
+a {
+    text-decoration: none;
+    color: black;
+}
+a .itemTitle {
+font-size: 20px;
+color: blue;
+}
+span.searchmatch {
+    font-weight: bold;
+}
