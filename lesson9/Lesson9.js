@@ -28,34 +28,31 @@
             this.listenTo(this.collection, 'remove', this.removeItem);
             this.listenTo(this.collection, 'add', this.addItem);
             this.listenTo(this.collection, 'reset', this.resetList);
-            view = null;
         },
         events: {
             "click": function (event) {
                 $(event.target).toggleClass("selected");
             },
-            "click [data-class='deleteItem']": function (event) {
+            "click [data-deleteItem]": function (event) {
                 var target = $(event.target);
-                var cid = target.closest('[data-class="item"]').attr('data-cid');
+                var cid = target.closest('[data-item]').attr('data-cid');
                 this.collection.remove( this.collection.get(cid) );
-                target = cid = null;
             },
             "click input": function (event) {
                 event.stopPropagation()
             },
             "blur input": function (event) {
                 var target = $(event.target);
-                var cid = target.closest('[data-class="item"]').attr('data-cid');
+                var cid = target.closest('[data-item]').attr('data-cid');
                 var model = this.collection.get(cid);
                 if (model.get('name') !== target.val()) {
                     model.set( {name: target.val()} );
                 }
-                target = cid = model = null;
             }
         },
         refreshName: function (model, value) {
             var selector = '[data-cid=' + model.cid + ']';
-            this.$(selector).find('[data-class="nameInput"]').val(value);
+            this.$(selector).find('[data-nameInput]').val(value);
                                  console.log(this.collection.pluck("name"));
         },
         removeItem: function (model) {
@@ -66,11 +63,10 @@
         addItem: function (model) {
             var compiled = this.options.template.clone()
                 .attr('data-cid', model.cid)
-                .find('[data-class="nameInput"]')
+                .find('[data-nameInput]')
                 .val(model.get('name'))
                 .end();
             this.$el.append(compiled);
-            compiled = null;
                                  console.log(this.collection.pluck("name"));
         },
         resetList: function () {
@@ -82,16 +78,16 @@
     var myFriendsView = new FriendNamesView({
         el: $("#list"),
         collection: myFriends,
-        template: $('#list [data-class="item"]').detach()
+        template: $('#list [data-item]').detach()
     });
 
-    $("[data-id='deleteSelected']").click(function () {
+    $("#deleteSelected").click(function () {
         myFriendsView.$('.selected').map(function (i, target) {
             var cid = $(target).attr('data-cid');
             myFriends.remove( myFriends.get(cid) );
         })
     });
-    $("[data-id='addItem']").click(function () {
+    $("#addItem").click(function () {
         myFriends.add(new Friend);
     });
 
