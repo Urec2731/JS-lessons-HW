@@ -11,11 +11,11 @@
     });
 
     var myFriends = new FriendList([
-        new Friend({name: "Колян"}),
-        new Friend({name: "Петрович"}),
-        new Friend({name: "Марина"}),
-        new Friend({name: "Макс"}),
-        new Friend({name: "Игорь"})
+        {name: "Колян"},
+        {name: "Петрович"},
+        {name: "Марина"},
+        {name: "Макс"},
+        {name: "Игорь"}
     ]);
 
     var FriendNamesView = Backbone.View.extend({
@@ -88,7 +88,7 @@
         })
     });
     $("#addItem").click(function () {
-        myFriends.add(new Friend);
+        myFriends.add({});
     });
 
 })();
