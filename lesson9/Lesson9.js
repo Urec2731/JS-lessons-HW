@@ -5,18 +5,31 @@
             age: 0
         }
     });
-
     var FriendList = Backbone.Collection.extend({
         model: Friend
     });
+    var myFriends = new FriendList();
 
-    var myFriends = new FriendList([
-        new Friend({name: "Колян"}),
-        new Friend({name: "Петрович"}),
-        new Friend({name: "Марина"}),
-        new Friend({name: "Макс"}),
-        new Friend({name: "Игорь"})
-    ]);
+    var ready = function (data) {
+        var keys = _.keys(data);
+        var values = _.values(data);
+        data = values.map(function(object, index){
+            object.id = keys[index];
+            return object;
+        });
+        myFriends.set(data);
+    };
+    $.ajaxSetup( {
+            url: 'http://localhost:8888/getFriendList'
+    } );
+
+    $.ajax({
+            data: {
+                userid: 'id01'
+            },
+            success:  ready
+        }
+    );
 
     var FriendNamesView = Backbone.View.extend({
         initialize: function () {
@@ -86,13 +99,29 @@
     });
 
     $("[data-id='deleteSelected']").click(function () {
-        myFriendsView.$('.selected').map(function (i, target) {
+        $("#list .selected").map(function (i, target) {
             var cid = $(target).attr('data-cid');
             myFriends.remove( myFriends.get(cid) );
         })
     });
+
     $("[data-id='addItem']").click(function () {
         myFriends.add(new Friend);
     });
+    var setModelID = function (data) {
+        myFriends.findWhere({cid: data.cid}).set('id', data.id);
+    };
 
+    var Controller = {};
+    _.extend(Controller, Backbone.Events);
+    Controller.collection = myFriends;
+    Controller.synchronize = function (model) {
+        if (model.id) {return};
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(model),
+            success: setModelID
+        });
+    };
+    Controller.listenTo(myFriends, 'add remove change', Controller.synchronize)
 })();
