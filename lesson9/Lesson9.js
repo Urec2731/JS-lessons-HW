@@ -1,4 +1,7 @@
 (function() {
+    $.ajaxSetup( {
+        url: 'http://localhost:8888/getFriendList'
+    } );
     var Friend = Backbone.Model.extend({
         defaults: {
             name: "",
@@ -8,29 +11,6 @@
     var FriendList = Backbone.Collection.extend({
         model: Friend
     });
-    var myFriends = new FriendList();
-
-    var ready = function (data) {
-        var keys = _.keys(data);
-        var values = _.values(data);
-        data = values.map(function(object, index){
-            object.id = keys[index];
-            return object;
-        });
-        myFriends.set(data);
-    };
-    $.ajaxSetup( {
-            url: 'http://localhost:8888/getFriendList'
-    } );
-
-    $.ajax({
-            data: {
-                userid: 'id01'
-            },
-            success:  ready
-        }
-    );
-
     var FriendNamesView = Backbone.View.extend({
         initialize: function () {
             var view = this;
@@ -69,12 +49,12 @@
         refreshName: function (model, value) {
             var selector = '[data-cid=' + model.cid + ']';
             this.$(selector).find('[data-class="nameInput"]').val(value);
-                                 console.log(this.collection.pluck("name"));
+            console.log(this.collection.pluck("name"));
         },
         removeItem: function (model) {
             var selector = '[data-cid=' + model.cid + ']';
             this.$(selector).remove();
-                                 console.log(this.collection.pluck("name"));
+            console.log(this.collection.pluck("name"));
         },
         addItem: function (model) {
             var compiled = this.options.template.clone()
@@ -84,18 +64,34 @@
                 .end();
             this.$el.append(compiled);
             compiled = null;
-                                 console.log(this.collection.pluck("name"));
+            console.log(this.collection.pluck("name"));
         },
         resetList: function () {
             this.$el.empty();
             this.initialize();
         }
     });
+    var myFriends,
+        myFriendsView;
+    var Controller = {};
+    _.extend(Controller, Backbone.Events);
+    var userid = 'id01';
+    function getFriendsFromServer (data) {
+        myFriends = new FriendList(data.friends);
+        myFriendsView = new FriendNamesView({
+            el: $("#list"),
+            collection: myFriends,
+            template: $('#list [data-class="item"]').detach()
+        });
+        Controller.collection = myFriends;
+        Controller.listenTo(Controller.collection, 'add remove change:name', Controller.synchronizeModel);
+    };
 
-    var myFriendsView = new FriendNamesView({
-        el: $("#list"),
-        collection: myFriends,
-        template: $('#list [data-class="item"]').detach()
+    $.ajax({
+            data: {
+                userid: userid
+            },
+            success:  getFriendsFromServer
     });
 
     $("[data-id='deleteSelected']").click(function () {
@@ -104,24 +100,25 @@
             myFriends.remove( myFriends.get(cid) );
         })
     });
-
     $("[data-id='addItem']").click(function () {
         myFriends.add(new Friend);
     });
-    var setModelID = function (data) {
-        myFriends.findWhere({cid: data.cid}).set('id', data.id);
-    };
 
-    var Controller = {};
-    _.extend(Controller, Backbone.Events);
-    Controller.collection = myFriends;
-    Controller.synchronize = function (model) {
-        if (model.id) {return};
+    function setModelID (data) {
+        console.log('responsedata=' + data)
+        myFriends.findWhere({cid: data.cid}).set({id: data.id}, {silent: true});
+    };
+    Controller.synchronizeModel = function (model, collection) {
+        model.attributes.cid = model.cid;
+        var data = JSON.stringify( model );
+        data = encodeURIComponent(data);
+        var length = (collection.length)? '&length=' + collection.length : '';
+        console.log(length);
         $.ajax({
             type: "POST",
-            data: JSON.stringify(model),
+            data: userid + '=' + data + length,
             success: setModelID
         });
-    };
-    Controller.listenTo(myFriends, 'add remove change', Controller.synchronize)
+    }
+
 })();
