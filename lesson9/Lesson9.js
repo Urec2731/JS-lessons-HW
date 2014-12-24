@@ -84,7 +84,7 @@
             template: $('#list [data-class="item"]').detach()
         });
         Controller.collection = myFriends;
-        Controller.listenTo(Controller.collection, 'add remove change:name', Controller.synchronizeModel);
+        Controller.listenTo(Controller.collection, 'add remove change', Controller.synchronizeModel);
     };
 
     $.ajax({
