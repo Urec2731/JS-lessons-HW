@@ -17,21 +17,18 @@
             view.collection.map(function (model) {
                 view.addItem(model);
             });
-            this.listenTo(this.collection, 'change:name', this.refreshName);
-            this.listenTo(this.collection, 'remove', this.removeItem);
-            this.listenTo(this.collection, 'add', this.addItem);
-            this.listenTo(this.collection, 'reset', this.resetList);
-            view = null;
+            view.listenTo(view.collection, 'change:name', view.refreshName);
+            view.listenTo(view.collection, 'remove', view.removeItem);
+            view.listenTo(view.collection, 'add', view.addItem);
+            view.listenTo(view.collection, 'reset', view.resetList);
         },
         events: {
             "click": function (event) {
-                $(event.target).toggleClass("selected");
-            },
-            "click [data-class='deleteItem']": function (event) {
-                var target = $(event.target);
-                var cid = target.closest('[data-class="item"]').attr('data-cid');
-                this.collection.remove( this.collection.get(cid) );
-                target = cid = null;
+                var target = $(event.target).toggleClass("selected");;
+                if (target.is('[data-class="deleteItem"]')) {
+                    var cid = target.closest('[data-class="item"]').attr('data-cid'); //TODO: remove doesmt work on new friends
+                    this.collection.remove(this.collection.get(cid));
+                };
             },
             "click input": function (event) {
                 event.stopPropagation()
@@ -43,18 +40,17 @@
                 if (model.get('name') !== target.val()) {
                     model.set( {name: target.val()} );
                 }
-                target = cid = model = null;
             }
         },
         refreshName: function (model, value) {
             var selector = '[data-cid=' + model.cid + ']';
             this.$(selector).find('[data-class="nameInput"]').val(value);
-            console.log(this.collection.pluck("name"));
+            console.log(this.collection.map(function(m) {return m.cid}));
         },
         removeItem: function (model) {
             var selector = '[data-cid=' + model.cid + ']';
             this.$(selector).remove();
-            console.log(this.collection.pluck("name"));
+            console.log(this.collection.map(function(m) {return m.cid}));
         },
         addItem: function (model) {
             var compiled = this.options.template.clone()
@@ -63,8 +59,8 @@
                 .val(model.get('name'))
                 .end();
             this.$el.append(compiled);
-            compiled = null;
-            console.log(this.collection.pluck("name"));
+            console.log(this.collection.map(function(c) {return c.cid}));
+            console.dir(model);
         },
         resetList: function () {
             this.$el.empty();
@@ -85,6 +81,9 @@
         });
         Controller.collection = myFriends;
         Controller.listenTo(Controller.collection, 'add remove change', Controller.synchronizeModel);
+        Controller.listenTo(Controller.collection, 'add', function(){console.log('add fired')});
+        Controller.listenTo(Controller.collection, 'remove', function(){console.log('remove fired')});
+        Controller.listenTo(Controller.collection, 'change', function(){console.log('change fired')});
     };
 
     $.ajax({
@@ -105,18 +104,31 @@
     });
 
     function setModelID (data) {
-        console.log('responsedata=' + data)
+                                                                console.log('responsedata=' + data)
+        if (typeof data === 'string') {
+            data = JSON.parse(data);
+        }
+        if (typeof data === 'string') {
+            return
+        }
         myFriends.findWhere({cid: data.cid}).set({id: data.id}, {silent: true});
+        console.dir(myFriends.findWhere({id: data.id}))
     };
     Controller.synchronizeModel = function (model, collection) {
         model.attributes.cid = model.cid;
         var data = JSON.stringify( model );
         data = encodeURIComponent(data);
+        console.log(data);
         var length = (collection.length)? '&length=' + collection.length : '';
-        console.log(length);
+                                                                    console.log(length);
         $.ajax({
             type: "POST",
             data: userid + '=' + data + length,
+            cache: false,
+                beforeSend: function( jqXHR, settings ) {
+                                                                    console.log('request');
+                                                                        console.dir(jqXHR);
+            },
             success: setModelID
         });
     }
