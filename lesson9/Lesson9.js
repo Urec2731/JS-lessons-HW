@@ -21,11 +21,12 @@
         },
         events: {
             "click": function (event) {
-                var target = $(event.target).toggleClass("selected");;
-                if (target.is('[data-class="deleteItem"]')) {
-                    var cid = target.closest('[data-class="item"]').attr('data-cid'); //TODO: remove doesmt work on new friends
-                    this.collection.remove(this.collection.get(cid));
-                };
+                $(event.target).toggleClass("selected");
+            },
+            "click [data-class='deleteItem']": function (event) {
+                var target = $(event.target);
+                var cid = target.closest('[data-class="item"]').attr('data-cid');
+                this.collection.remove( this.collection.get(cid) );
             },
             "click input": function (event) {
                 event.stopPropagation()
