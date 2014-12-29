@@ -1,7 +1,4 @@
 (function() {
-    $.ajaxSetup( {
-        url: 'http://localhost:8888/getFriendList'
-    } );
     var Friend = Backbone.Model.extend({
         defaults: {
             name: "",
@@ -72,7 +69,9 @@
     var Controller = {};
     _.extend(Controller, Backbone.Events);
     var userid = 'id01';
-    function getFriendsFromServer (data) {
+    var baseUrl = 'http://localhost:8888/base/';
+    function getFriendsFromServer (data, status) {
+        console.log(status);
         myFriends = new FriendList(data.friends);
         myFriendsView = new FriendNamesView({
             el: $("#list"),
@@ -80,17 +79,14 @@
             template: $('#list [data-class="item"]').detach()
         });
         Controller.collection = myFriends;
-        Controller.listenTo(Controller.collection, 'add remove change', Controller.synchronizeModel);
-        Controller.listenTo(Controller.collection, 'add', function(){console.log('add fired')});
-        Controller.listenTo(Controller.collection, 'remove', function(){console.log('remove fired')});
-        Controller.listenTo(Controller.collection, 'change', function(){console.log('change fired')});
+        Controller.listenTo(Controller.collection, 'add', Controller.addToServer);
+        Controller.listenTo(Controller.collection, 'remove', Controller.removeFromServer);
+        Controller.listenTo(Controller.collection, 'change', Controller.changeONServer);
     };
 
     $.ajax({
-            data: {
-                userid: userid
-            },
-            success:  getFriendsFromServer
+        url: baseUrl + userid  + '/friends',
+        success:  getFriendsFromServer
     });
 
     $("[data-id='deleteSelected']").click(function () {
@@ -103,8 +99,10 @@
         myFriends.add(new Friend);
     });
 
-    function setModelID (data) {
-                                                                console.log('responsedata=' + data)
+    Controller.setModelID = function (data, status, jqXHR) {
+                                                                console.log('responsedata=' + data);
+                                                                console.log(status);
+                                                                console.log(jqXHR);
         if (typeof data === 'string') {
             data = JSON.parse(data);
         }
@@ -112,25 +110,59 @@
             return
         }
         myFriends.findWhere({cid: data.cid}).set({id: data.id}, {silent: true});
-        console.dir(myFriends.findWhere({id: data.id}))
+        console.dir(myFriends.get(data.id));
     };
-    Controller.synchronizeModel = function (model, collection) {
+    Controller.addToServer = function (model, collection) {
         model.attributes.cid = model.cid;
         var data = JSON.stringify( model );
         data = encodeURIComponent(data);
-        console.log(data);
-        var length = (collection.length)? '&length=' + collection.length : '';
-                                                                    console.log(length);
+                                                                   console.log(data);
         $.ajax({
+            url: baseUrl + userid  + '/friends',
             type: "POST",
-            data: userid + '=' + data + length,
-            cache: false,
-                beforeSend: function( jqXHR, settings ) {
+            data: data,
+            beforeSend: function( jqXHR, settings ) {
                                                                     console.log('request');
                                                                         console.dir(jqXHR);
             },
-            success: setModelID
+            success: Controller.setModelID
         });
-    }
+    };
+    Controller.changeResponseHandler = function (data, status, jqXHR) {
+                                                                console.log('responsedata=' + data);
+                                                                console.log(status);
+                                                                console.log(jqXHR);};
+    Controller.changeONServer = function (model, collection) {
+                                                                   console.log(model.id);
+        var data = JSON.stringify( model );
+        data = encodeURIComponent(data);
+                                                                   console.log(data);
+        $.ajax({
+            url: baseUrl + userid  + '/friends/' + model.id,
+            type: "PUT",
+            data: data,
+            beforeSend: function( jqXHR, settings ) {
+                                                                    console.log('request');
+                                                                        console.dir(jqXHR);
+            },
+            success: changeResponseHandler
+        });
+    };
+    Controller.removeResponseHandler = function (data, status, jqXHR) {
+                                                                console.log('responsedata=' + data);
+                                                                console.log(status);
+                                                                console.log(jqXHR);
+    };
+    Controller.removeFromServer = function (model) {
+                                                            console.log(model.id);
+        $.ajax({
+            url: baseUrl + userid  + '/friends/' + model.id,
+            type: "DELETE",
+            beforeSend: function( jqXHR, settings ) {
+                console.log('request');
+                console.dir(jqXHR);
+            },
+            success: Controller.removeResponseHandler
+        });};
 
 })();
