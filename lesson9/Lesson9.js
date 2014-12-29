@@ -69,11 +69,11 @@
         myFriendsView;
     var Controller = {};
     _.extend(Controller, Backbone.Events);
-    var userid = 'id01';
+    var userId = 'id01';
     var baseUrl = 'http://localhost:8888/base/';
     function getFriendsFromServer (data, status) {
         console.log(status);
-        myFriends = new FriendList(data.friends);
+        myFriends = new FriendList(data);
         myFriendsView = new FriendNamesView({
             el: $("#list"),
             collection: myFriends,
@@ -86,7 +86,7 @@
     };
 
     $.ajax({
-        url: baseUrl + userid  + '/friends',
+        url: baseUrl + userId  + '/friends',
         success:  getFriendsFromServer
     });
 
@@ -113,13 +113,13 @@
         myFriends.findWhere({cid: data.cid}).set({id: data.id}, {silent: true});
         console.dir(myFriends.get(data.id));
     };
-    Controller.addToServer = function (model, collection) {
+    Controller.addToServer = function (model) {
         model.attributes.cid = model.cid;
         var data = JSON.stringify( model );
         data = encodeURIComponent(data);
                                                                    console.log(data);
         $.ajax({
-            url: baseUrl + userid  + '/friends',
+            url: baseUrl + userId  + '/friends',
             type: "POST",
             data: data,
             beforeSend: function( jqXHR, settings ) {
@@ -132,13 +132,13 @@
                                                                 console.log('responsedata=' + data);
                                                                 console.log(status);
                                                                 console.log(jqXHR);};
-    Controller.changeONServer = function (model, collection) {
+    Controller.changeONServer = function (model) {
                                                                    console.log(model.id);
         var data = JSON.stringify( model );
         data = encodeURIComponent(data);
                                                                    console.log(data);
         $.ajax({
-            url: baseUrl + userid  + '/friends/' + model.id,
+            url: baseUrl + userId  + '/friends/' + model.id,
             type: "PUT",
             data: data,
             beforeSend: function( jqXHR, settings ) {
@@ -155,7 +155,7 @@
     Controller.removeFromServer = function (model) {
                                                             console.log(model.id);
         $.ajax({
-            url: baseUrl + userid  + '/friends/' + model.id,
+            url: baseUrl + userId  + '/friends/' + model.id,
             type: "DELETE",
             beforeSend: function( jqXHR, settings ) {
                                                                     console.log('request');
