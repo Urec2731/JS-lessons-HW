@@ -125,9 +125,8 @@
             beforeSend: function( jqXHR, settings ) {
                                                                     console.log('request');
                                                                         console.dir(jqXHR);
-            },
-            success: Controller.setModelID
-        });
+            }
+        }).done(Controller.setModelID);
     };
     Controller.changeResponseHandler = function (data, status, jqXHR) {
                                                                 console.log('responsedata=' + data);
@@ -145,9 +144,8 @@
             beforeSend: function( jqXHR, settings ) {
                                                                     console.log('request');
                                                                         console.dir(jqXHR);
-            },
-            success: changeResponseHandler
-        });
+            }
+        }).done(Controller.changeResponseHandler);
     };
     Controller.removeResponseHandler = function (data, status, jqXHR) {
                                                                 console.log('responsedata=' + data);
@@ -160,10 +158,9 @@
             url: baseUrl + userid  + '/friends/' + model.id,
             type: "DELETE",
             beforeSend: function( jqXHR, settings ) {
-                console.log('request');
-                console.dir(jqXHR);
-            },
-            success: Controller.removeResponseHandler
-        });};
+                                                                    console.log('request');
+                                                                    console.dir(jqXHR);
+            }
+        }).done(Controller.removeResponseHandler);};
 
 })();
