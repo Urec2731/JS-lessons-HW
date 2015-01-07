@@ -1,0 +1,12 @@
+body {
+ background-color: dimgray;
+    color: #bbbbbb;
+}
+body * {
+ background-color: inherit;
+    color: inherit;
+
+}
+.selected {
+    background-color: blue;
+}
