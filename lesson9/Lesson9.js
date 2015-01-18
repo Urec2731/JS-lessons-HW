@@ -75,7 +75,7 @@
             collection: myFriends
         });
 
-    $("[data-id='deleteSelected']").click(function () {
+    $("#deleteSelected").click(function () {
         _.values( myFriendsView.viewsList )
             .filter(function(view) {
                 return view !== null && view.$el.hasClass('selected');
@@ -84,7 +84,7 @@
                 view.model.destroy()
             });
     });
-    $("[data-id='addItem']").click(function () {
+    $("#addItem").click(function () {
         myFriends.add({});
     });
 //})();
