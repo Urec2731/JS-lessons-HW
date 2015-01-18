@@ -1,9 +1,9 @@
-define(["jquery", "underscore", "backbone"],
-    function($, _, Backbone ) {
+define(["jquery", "underscore", "backbone", 'app/itemTemplate'],
+    function($, _, Backbone, template ) {
         return Backbone.View.extend({
-            initialize: function (opt) {
+            initialize: function () {
                 var view = this;
-                view.setElement( opt.template.clone() );
+                view.setElement( template.clone() );
                 view.$name = view.$( '[data-nameInput]' );
                 view.$name.val( view.model.get('name') );
                 view.$delete = view.$( '[data-deleteItem]' );

@@ -4,18 +4,20 @@ requirejs.config({
         app: '../app'
     }
 });
-require( ["jquery", "underscore", "backbone"],
-    function($, _, Backbone ) {
-        var FriendsCollection = require(['app/FriendsCollection']);
-        var responseFromServerImitation = require(['app/responseFromServerImitation']);
-        var friendTemplate = $('#list [data-item]').detach();  //fixme добавить в инит вьюхи
-        var FriendView = require(['app/FriendView']);
-        var myFriends = new FriendList(myFriendsFromServer);
-        myFriendsView = new FriendsListView( {
-            el: $("#list"),
-            collection: myFriends
-        });
-
+require( [
+        "jquery",
+        "underscore",
+        "backbone",
+        'app/FriendsCollection',
+        'app/responseFromServerImitation',
+        'app/FriendView'
+    ],
+    function($, _, Backbone, FriendList, myFriendsFromServer, FriendsListView ) {
+        var myFriends = new FriendList(myFriendsFromServer),
+            myFriendsView = new FriendsListView( {
+                el: $("#list"),
+                collection: myFriends
+            });
         $("#deleteSelected").click(function () {
             _.values( myFriendsView.viewsList )
                 .filter(function(view) {
@@ -28,6 +30,5 @@ require( ["jquery", "underscore", "backbone"],
         $("#addItem").click(function () {
             myFriends.add({});
         });
-        template
     }
 );
