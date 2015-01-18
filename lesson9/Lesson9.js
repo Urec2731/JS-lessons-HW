@@ -69,7 +69,7 @@
             this.viewsList[model.cid] = null;
         }
     });
-    var myFriends = new FriendList(myFriendsFromServer);
+    var myFriends = new FriendList(myFriendsFromServer),
         myFriendsView = new FriendsListView( {
             el: $("#list"),
             collection: myFriends

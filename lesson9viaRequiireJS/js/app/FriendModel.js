@@ -1,11 +1,9 @@
-define(["../lib/jquery", "../lib/underscore", "../lib/backbone"],
+define(["jquery", "underscore", "backbone"],
     function($, _, Backbone) {
-        var model = Backbone.Model.extend({
-                defaults: {
-                    name: "",
-                    age: 0
-                }
+        return Backbone.Model.extend({
+            defaults: {
+                name: ""
+            }
         });
-        return new model();
     }
 );

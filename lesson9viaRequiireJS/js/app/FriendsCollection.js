@@ -1,18 +1,7 @@
-define(["../lib/jquery", "../lib/underscore", "../lib/backbone", './FriendModel'],
-    function($, _, Backbone, Friend) {
-       var Friends = Backbone.Collection.extend({
-           model: Friend,
-           getFriendsFromServer: function (url){
-               var collection = this;
-               $.ajax({
-                   url: url,
-                   success:  function (data, status) {
-                       console.log(status);
-                       collection.add(data);
-                   }
-               });
-           }
-       }) ;
-        return new Friends();
+define(["jquery", "underscore", "backbone"],
+    function($, _, Backbone ) {
+        return Backbone.Collection.extend({
+           model: require(['app/FriendModel'])
+        });
     }
 );
