@@ -1,22 +1,13 @@
-requirejs.config({
-    baseUrl: 'js/lib',
-    paths: {
-        app: '../app'
-    }
-});
-require( [
-        "jquery",
-        "underscore",
-        "backbone",
-        'app/FriendsCollection',
-        'app/responseFromServerImitation',
-        'app/FriendView'
-    ],
-    function($, _, Backbone, FriendList, myFriendsFromServer, FriendsListView ) {
-        var myFriends = new FriendList(myFriendsFromServer),
+define( ["jquery","underscore","backbone",'app/FriendsCollection','FriendsListView'],
+    function($, _, Backbone, FriendsCollection, FriendsListView ) {
+        var myFriends = new FriendsCollection([]),
             myFriendsView = new FriendsListView( {
                 el: $("#list"),
                 collection: myFriends
+            });
+        require(['app/responseFromServerImitation'],
+            function(response) {
+                myFriends.set(response);
             });
         $("#deleteSelected").click(function () {
             _.values( myFriendsView.viewsList )

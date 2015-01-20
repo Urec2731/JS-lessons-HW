@@ -1,5 +1,6 @@
-define(["jquery", "underscore", "backbone", 'app/itemTemplate'],
-    function($, _, Backbone, template ) {
+define(["jquery", "underscore", "backbone"],
+    function($, _, Backbone ) {
+        var template = $('#list [data-item]').detach();
         return Backbone.View.extend({
             initialize: function () {
                 var view = this;
@@ -23,7 +24,6 @@ define(["jquery", "underscore", "backbone", 'app/itemTemplate'],
                 view.$delete.click(function(){
                     view.model.destroy();
                 });
-
             },
             refreshName: function () {
                 this.$name.val( this.model.get('name') );

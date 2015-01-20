@@ -1,7 +1,7 @@
-define(["jquery", "underscore", "backbone"],
-    function($, _, Backbone ) {
+define(["backbone", 'app/FriendModel'],
+    function(Backbone, FriendModel ) {
         return Backbone.Collection.extend({
-           model: require(['app/FriendModel'])
+            model: FriendModel
         });
     }
 );

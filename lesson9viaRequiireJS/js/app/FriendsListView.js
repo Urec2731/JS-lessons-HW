@@ -1,6 +1,6 @@
 define(["jquery", "underscore", "backbone", 'app/FriendView'],
     function($, _, Backbone, FriendView) {
-        return Backbone.View.extend({
+        return  Backbone.View.extend({
             initialize: function () {
                 var view = this;
                 view.viewsList = {};
@@ -20,6 +20,6 @@ define(["jquery", "underscore", "backbone", 'app/FriendView'],
             removeItem: function (model) {
                 this.viewsList[model.cid] = null;
             }
-        })
+        });
     }
 );
