@@ -1,4 +1,4 @@
-define( ["jquery","underscore","backbone",'app/FriendsCollection','FriendsListView'],
+define( ["jquery","underscore","backbone",'app/FriendsCollection','app/FriendsListView'],
     function($, _, Backbone, FriendsCollection, FriendsListView ) {
         var myFriends = new FriendsCollection([]),
             myFriendsView = new FriendsListView( {
