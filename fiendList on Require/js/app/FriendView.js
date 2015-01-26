@@ -22,7 +22,7 @@ define(["jquery", "underscore", "backbone"],
                     }
                 });
                 view.$delete.click(function(){
-                    view.model.destroy();
+                    view.model.destroy({wait: true});
                 });
             },
             refreshName: function () {
