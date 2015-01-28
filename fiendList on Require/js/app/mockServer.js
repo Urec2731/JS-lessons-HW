@@ -1,12 +1,6 @@
-define(["jquery", 'jquery.mockjax'],
-    function ($) {
-        var myFriends = [
-            {id: 1, name: "Колян"},
-            {id: 2, name: "Петрович"},
-            {id: 3, name: "Марина"},
-            {id: 4, name: "Макс"},
-            {id: 5, name: "Игорь"}
-        ];
+define(["jquery", 'app/mockBase', 'jquery.mockjax'],
+    function ($, myFriends) {
+        console.log(myFriends);
         $.mockjax({
             type: 'GET',
             url: '/api/friends',
