@@ -1,6 +1,5 @@
 define(["jquery", 'app/mockBase', 'jquery.mockjax'],
     function ($, myFriends) {
-        console.log(myFriends);
         $.mockjax({
             type: 'GET',
             url: '/api/friends',
