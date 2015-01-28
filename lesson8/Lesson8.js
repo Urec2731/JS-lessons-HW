@@ -1,5 +1,5 @@
 jQuery(function( $ ) {
-    var friendList = ["Колян" ,"Петрович" ,"Марина" ,"Макс" ,"Игорь"],
+    var friendList = ["Колян" ,"Петрович" ,"Марина" ,"Макс" ,"Игорь" ,"Юрий"],
         list = $("[data-id='list']"),
         itemTemplate = list.find('[data-class="item"].hidden');
 
